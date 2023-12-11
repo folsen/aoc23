@@ -52,6 +52,20 @@ fn valid_game(game: &Game, tr: u32, tg: u32, tb: u32) -> bool {
     game.rounds.iter().all(|r| r.red <= tr && r.green <= tg && r.blue <= tb)
 }
 
+fn find_power(game: &Game) -> u32 {
+    let mut min_r = 0;
+    let mut min_g = 0;
+    let mut min_b = 0;
+
+    for round in game.rounds.iter() {
+        min_r = min_r.max(round.red);
+        min_g = min_g.max(round.green);
+        min_b = min_b.max(round.blue);
+    }
+    
+    min_r * min_g * min_b
+}
+
 fn main() {
     let lines = read_input("input.txt");    
     let games: Vec<Game> = lines.iter().map(|l| parse_line(l)).collect();
@@ -59,5 +73,8 @@ fn main() {
     // loaded with only 12 red cubes, 13 green cubes, and 14 blue cubes. 
     // What is the sum of the IDs of those games?
     let part1: usize = games.iter().filter(|g| valid_game(&g, 12, 13, 14)).map(|g| g.id).sum();
-    println!("{:?}", part1);
+    println!("{}", part1);
+
+    let part2: u32 = games.iter().map(|g| find_power(g)).sum();
+    println!("{}", part2)
 }
